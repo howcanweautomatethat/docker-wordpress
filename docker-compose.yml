@@ -1,0 +1,32 @@
+version: '2'
+services:
+  wordpress:
+    image: wordpress:latest # https://hub.docker.com/_/wordpress/
+    ports:
+      - 93:80 # change port for every deployment. Get nginx config to look here
+    volumes:
+      - ./client1/config/php.conf.uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - ./client1/wp-app:/var/www/html # Full wordpress project
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: MAKEPASSWORD # change this
+    depends_on:
+      - db
+    networks:
+      - ndock1
+  db:
+    image: mariadb:latest
+    ports:
+      - 3312:3306 # change port for every new deploymen
+    volumes:
+      - ./client1/mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_ROOT_PASSWORD: SAMEPASS AS LINE 14!! # change this
+    networks:
+      - ndock1
+networks:
+  ndock1:
+      driver: bridge
